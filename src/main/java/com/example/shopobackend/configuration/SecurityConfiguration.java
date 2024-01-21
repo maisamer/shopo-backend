@@ -1,6 +1,7 @@
 package com.example.shopobackend.configuration;
 
 import com.example.shopobackend.filters.CsrfCookieFilter;
+import com.example.shopobackend.filters.HeaderValidationFilter;
 import org.springframework.boot.autoconfigure.security.SecurityProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -43,6 +44,7 @@ public class SecurityConfiguration {
                 .csrf(csrf->csrf.csrfTokenRequestHandler(requestHandler).ignoringRequestMatchers("/users/add","/contact")
                 .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()))
                         .addFilterAfter(new CsrfCookieFilter(), BasicAuthenticationFilter.class)
+                        .addFilterBefore(new HeaderValidationFilter(), BasicAuthenticationFilter.class)
                 .authorizeHttpRequests((requests) -> requests
                         .requestMatchers("/products/all","/users/add").permitAll()
                         .requestMatchers("/products/add").hasAnyAuthority("ADD_PRODUCT","EDIT_PRODUCT")
