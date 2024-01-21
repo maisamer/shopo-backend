@@ -13,6 +13,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @AllArgsConstructor
@@ -51,10 +52,14 @@ public class UserService {
         return userRepository.findById(id).orElseThrow();
     }
 
-    public ShopoUser login(Authentication authentication) {
-        List<ShopoUser> users = userRepository.findByEmail(authentication.getName());
-        if(users.isEmpty())
-            return null;
-        return users.get(0);
+    public UserDto login(Authentication authentication) {
+        Optional<ShopoUser> user = userRepository.findByEmail(authentication.getName());
+        if(user.isPresent())
+            return userMapper.shopoUserToUserDto(user.get());
+        throw new RuntimeException("User not found");
+    }
+
+    public Optional<ShopoUser> getUserWithPrivileges(String username) {
+        return userRepository.findByEmail(username);
     }
 }

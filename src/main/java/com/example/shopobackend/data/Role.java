@@ -1,16 +1,22 @@
 package com.example.shopobackend.data;
 
+import jakarta.persistence.*;
 import lombok.Data;
-import jakarta.persistence.Id;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
+
+import java.util.List;
 
 @Data
 @Entity
 public class Role extends BaseEntity{
-
     private String roleName;
-
+    @OneToMany(mappedBy = "role")
+    private List<ShopoUser> users;
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "role_privilege",
+            joinColumns = @JoinColumn(name = "role_id"),
+            inverseJoinColumns = @JoinColumn(name = "privilege_id")
+    )
+    private List<Privilege> privileges;
 }
 

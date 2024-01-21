@@ -18,7 +18,7 @@ public class UserController {
     private final UserService userService;
 
     @GetMapping("/login")
-    public ShopoUser login(Authentication authentication) {
+    public UserDto login(Authentication authentication) {
         return userService.login(authentication);
     }
 

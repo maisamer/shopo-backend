@@ -45,7 +45,10 @@ public class SecurityConfiguration {
                         .addFilterAfter(new CsrfCookieFilter(), BasicAuthenticationFilter.class)
                 .authorizeHttpRequests((requests) -> requests
                         .requestMatchers("/products/all","/users/add").permitAll()
-                .requestMatchers("/users/all","/users/login").authenticated());
+                        .requestMatchers("/products/add").hasAnyAuthority("ADD_PRODUCT","EDIT_PRODUCT")
+                        .requestMatchers("/users/all").hasAuthority("VIEW_USERS")
+                        .requestMatchers("/users/login").authenticated()
+                );
         http.formLogin(withDefaults());
         http.httpBasic(withDefaults());
         return http.build();

@@ -22,5 +22,6 @@ public class ShopoUser extends BaseEntity{
     @Enumerated(EnumType.STRING)
     private UserStatus status;
     @ManyToOne
+    @JoinColumn(name = "role_id")
     private Role role;
 }
