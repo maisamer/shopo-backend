@@ -1,6 +1,6 @@
 package com.example.shopobackend.service;
 
-import com.example.shopobackend.Constant;
+import com.example.shopobackend.Constants;
 import com.example.shopobackend.data.ShopoUser;
 import com.example.shopobackend.dto.ResponseModel;
 import com.example.shopobackend.dto.UserDto;
@@ -34,9 +34,9 @@ public class UserService {
             shopoUser.setRole(authorizationService.getRoleByRoleName(user.getRoleName()));
             ShopoUser insertedUser = userRepository.save(shopoUser);
             return new ResponseModel<>(HttpStatus.CREATED.value(),
-                    Constant.USER_SAVED_MESSAGE,Constant.USER_SAVED_MESSAGE,userMapper.shopoUserToUserDto(insertedUser));
+                    Constants.USER_SAVED_MESSAGE, Constants.USER_SAVED_MESSAGE,userMapper.shopoUserToUserDto(insertedUser));
         } catch (Exception e) {
-            return new ResponseModel<>(HttpStatus.INTERNAL_SERVER_ERROR.value(), Constant.USER_NOT_SAVED_MESSAGE,e.getMessage(),null);
+            return new ResponseModel<>(HttpStatus.INTERNAL_SERVER_ERROR.value(), Constants.USER_NOT_SAVED_MESSAGE,e.getMessage(),null);
         }
     }
 

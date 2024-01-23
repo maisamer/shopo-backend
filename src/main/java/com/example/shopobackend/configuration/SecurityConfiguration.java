@@ -2,6 +2,8 @@ package com.example.shopobackend.configuration;
 
 import com.example.shopobackend.filters.CsrfCookieFilter;
 import com.example.shopobackend.filters.HeaderValidationFilter;
+import com.example.shopobackend.filters.JWTTokenGeneratorFilter;
+import com.example.shopobackend.filters.JWTTokenValidatorFilter;
 import org.springframework.boot.autoconfigure.security.SecurityProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -17,6 +19,7 @@ import org.springframework.security.web.csrf.CsrfTokenRequestAttributeHandler;
 import org.springframework.web.cors.CorsConfiguration;
 
 import java.util.Collections;
+import java.util.List;
 
 import static org.springframework.security.config.Customizer.withDefaults;
 
@@ -29,15 +32,14 @@ public class SecurityConfiguration {
         CsrfTokenRequestAttributeHandler requestHandler = new CsrfTokenRequestAttributeHandler();
         requestHandler.setCsrfRequestAttributeName("_csrf");
 
-        http.securityContext((context) -> context
-                .requireExplicitSave(false))
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.ALWAYS))
+        http.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .cors(corsCustomizer -> corsCustomizer.configurationSource(request -> {
                     CorsConfiguration config = new CorsConfiguration();
                     config.setAllowedOrigins(Collections.singletonList("http://localhost:4200"));
                     config.setAllowedMethods(Collections.singletonList("*"));
                     config.setAllowCredentials(true);
                     config.setAllowedHeaders(Collections.singletonList("*"));
+                    config.setExposedHeaders(List.of("Authorization"));
                     config.setMaxAge(3600L);
                     return config;
                 }))
@@ -45,6 +47,8 @@ public class SecurityConfiguration {
                 .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()))
                         .addFilterAfter(new CsrfCookieFilter(), BasicAuthenticationFilter.class)
                         .addFilterBefore(new HeaderValidationFilter(), BasicAuthenticationFilter.class)
+                        .addFilterAfter(new JWTTokenGeneratorFilter(), BasicAuthenticationFilter.class)
+                        .addFilterBefore(new JWTTokenValidatorFilter(), BasicAuthenticationFilter.class)
                 .authorizeHttpRequests((requests) -> requests
                         .requestMatchers("/products/all","/users/add").permitAll()
                         .requestMatchers("/products/add").hasAnyAuthority("ADD_PRODUCT","EDIT_PRODUCT")
