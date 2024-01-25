@@ -3,6 +3,7 @@ package com.example.shopobackend.service;
 import com.example.shopobackend.data.Product;
 import com.example.shopobackend.dto.ProductDto;
 import com.example.shopobackend.dto.ResponseModel;
+import com.example.shopobackend.exceptions.ItemNotFoundException;
 import com.example.shopobackend.mappers.ProductMapper;
 import com.example.shopobackend.repository.ProductRepository;
 import lombok.AllArgsConstructor;
@@ -12,11 +13,13 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 
 @Service
 @AllArgsConstructor
 public class ProductService {
+
     private final ProductRepository productRepository;
     private final ProductMapper productMapper;
 
@@ -40,7 +43,13 @@ public class ProductService {
         productRepository.deleteById(id);
     }
 
-    public Product getProductById(Long id) {
-        return productRepository.findById(id).orElseThrow();
+    public ResponseModel<ProductDto> getProductById(Long id) {
+        Optional<Product> productOptional = productRepository.findById(id);
+        if(productOptional.isPresent()) {
+            ProductDto productDto = productMapper.productToProductDto(productOptional.get());
+            return ResponseModel.<ProductDto>builder().status(HttpStatus.FOUND.value())
+                    .data(productDto).build();
+        }
+        throw new ItemNotFoundException("Product not found");
     }
 }
