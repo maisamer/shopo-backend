@@ -53,6 +53,7 @@ public class SecurityConfiguration {
                         .requestMatchers("/products/all","/users/add").permitAll()
                         .requestMatchers("/products/add").hasAnyAuthority("ADD_PRODUCT","EDIT_PRODUCT")
                         .requestMatchers("/users/all").hasAuthority("VIEW_USERS")
+                        .requestMatchers("/orders").hasAnyAuthority("VIEW_ORDERS")
                         .requestMatchers("/users/login").authenticated()
                 );
         http.formLogin(withDefaults());

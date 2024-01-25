@@ -1,13 +1,13 @@
 package com.example.shopobackend.data;
 
 import com.example.shopobackend.enums.UserStatus;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
 
-@Getter
-@Setter
+import java.util.List;
+
+@Data
 @Entity
 @Table(name = "users")
 public class ShopoUser extends BaseEntity{
@@ -24,4 +24,7 @@ public class ShopoUser extends BaseEntity{
     @ManyToOne
     @JoinColumn(name = "role_id")
     private Role role;
+    @OneToMany(mappedBy = "user")
+    @JsonIgnore
+    List<Order> orders;
 }
