@@ -1,6 +1,7 @@
 package com.example.shopobackend.data;
 
 
+import com.example.shopobackend.enums.Currency;
 import com.example.shopobackend.enums.ProductCategory;
 import jakarta.persistence.*;
 import lombok.Data;
@@ -18,4 +19,6 @@ public class Product extends BaseEntity{
     private Integer price;
     @ManyToOne
     private Brand brand;
+    @Enumerated(EnumType.STRING)
+    private Currency currency;
 }
