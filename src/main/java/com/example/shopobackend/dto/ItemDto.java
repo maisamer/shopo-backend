@@ -7,4 +7,8 @@ import lombok.Data;
 public class ItemDto {
     Integer quantity;
     Product product;
+
+    public double calculateTotalCost(){
+        return quantity* product.getPrice();
+    }
 }
